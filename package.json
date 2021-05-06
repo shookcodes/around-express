@@ -1,0 +1,33 @@
+{
+  "name": "around-express",
+  "version": "1.0.0",
+  "description": "Connecting front end (React) and backend (Node) into one full-stack app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "node app.js",
+    "client": "npm start --prefix client",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shookcodes/around-express.git"
+  },
+  "author": "Sarah Shook",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shookcodes/around-express/issues"
+  },
+  "homepage": "https://github.com/shookcodes/around-express#readme",
+  "devDependencies": {
+    "concurrently": "^6.0.2",
+    "eslint": "^7.25.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.22.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.7",
+    "path": "^0.12.7"
+  }
+}
