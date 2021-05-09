@@ -4,9 +4,7 @@ module.exports = {
     es2021: true,
   },
   extends: [
-    'plugin:react/recommended',
-    'airbnb',
-    'airbnb-base'
+    'airbnb-base',
   ],
   parserOptions: {
     ecmaFeatures: {
@@ -15,9 +13,6 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module',
   },
-  plugins: [
-    'react',
-  ],
   rules: {
     'no-underscore-dangle': 'off',
   },
