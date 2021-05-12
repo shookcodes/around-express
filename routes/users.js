@@ -17,7 +17,7 @@ userRouter.get('/', (req, res) => {
 userRouter.get('/:id', (req, res) => {
   fs.readFile(path.join(__dirname, '../data/users.json'), 'utf-8', (err, data) => {
     if (err) {
-      return res.status(404).json({ message: 'Requested resource not found' });
+      return res.status(500).json({ message: 'Requested resource not found' });
     }
     const userData = JSON.parse(data);
 
