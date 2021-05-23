@@ -19,3 +19,13 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch(() => res.status(500).send({ message: 'Error' }));
 };
+
+module.exports.patchUser = (req, res) => {
+  User.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    upsert: true,
+  })
+    .then((user) => res.send({ data: user }))
+    .catch(() => res.status(500).send({ message: 'Data validation failed or another error occured.' }));
+};

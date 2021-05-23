@@ -1,8 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const path = require('path');
-const cors = require('cors')
 
 const app = express();
 const port = 3000;
@@ -16,12 +14,19 @@ mongoose.connect('mongodb://localhost:27017/aroundb', {
   useFindAndModify: false,
 });
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '60aa937155956118f8da80ed',
+  };
+
+  next();
+});
+
 app.use('/users', require('./routes/users'));
-//app.post('/users', cors(), require('./routes/users'));
-//app.get('/cards', cardsRouter);
+app.use('/cards', require('./routes/cards'));
+
+app.patch('/users/:id', ('./routes/users'));
 
 app.get('/', (req, res) => res.status(404).json({ message: 'Requested resource not found' }));
-
-//app.use(express.static(path.join(__dirname, 'public')));
 
 app.listen(port, () => {});
