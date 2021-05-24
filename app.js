@@ -25,8 +25,6 @@ app.use((req, res, next) => {
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.patch('/users/:id', ('./routes/users'));
-
 app.get('/', (req, res) => res.status(404).json({ message: 'Requested resource not found' }));
 
 app.listen(port, () => {});

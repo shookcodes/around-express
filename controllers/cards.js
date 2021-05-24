@@ -1,4 +1,4 @@
-const Card = require('../models/cards');
+const Card = require('../models/card');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
@@ -7,18 +7,42 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.createCard = (req, res) => {
-  const { name, link, owner, createdAt } = req.body;
+  const owner = req.user._id;
+  const { name, link, createdAt } = req.body;
 
-  Card.create({ name, link, owner, createdAt })
+  Card.create(
+    {
+      name, link, owner, createdAt,
+    },
+  )
     .then((card) => res.send({ data: card }))
     .catch(() => res.status(500).send({ message: 'Error' }));
 };
 
 module.exports.deleteCard = (req, res) => {
-  const { _id } = req.body;
+  if (Card.owner === req.params.owner) {
+    Card.findByIdAndRemove(req.params.cardId)
+      .then((user) => res.send({ data: user }))
+      .catch(() => res.status(500).send({ message: 'Error' }));
+  }
+};
 
-  Card.delete({ _id });
-  Card.findByIdAndRemove(req.params.id)
-    .then((card) => res.send({ data: card }))
+module.exports.likeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $addToSet: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((like) => res.send({ data: like }))
+    .catch(() => res.status(500).send({ message: 'Error' }));
+};
+
+module.exports.dislikeCard = (req, res) => {
+  Card.findByIdAndUpdate(
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
+  )
+    .then((like) => res.send({ data: like }))
     .catch(() => res.status(500).send({ message: 'Error' }));
 };
