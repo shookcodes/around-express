@@ -12,7 +12,7 @@ const cardSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: (v) => {
-        const regex = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:\/~+#-]*[\w@?^=%&amp;\/~+#-])?/;
+        const regex = /(http|ftp|https):\/\/[\w-]+(\.[\w-]+)+([\w.,@?^=%&amp;:/~+#-]*[\w@?^=%&amp;/~+#-])?/;
         return regex.test(v);
       },
       message: 'You did not enter a valid URL',
