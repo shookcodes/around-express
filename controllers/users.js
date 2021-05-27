@@ -7,16 +7,32 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.find({}).orFail()
+  User.find({}).orFail(new Error('User not found'))
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(404).send({ message: 'Requested resource not found' }));
+    .catch((err) => {
+      if (err.message === 'User not Found') {
+        res.status(404).send({ message: 'Requested resource not found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Valid data not provided' });
+      } else {
+        res.status(500).send({ message: 'Error' });
+      }
+    });
 };
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar }).orFail()
+  User.create({ name, about, avatar }).orFail(new Error('Error'))
     .then((user) => res.send({ data: user }))
-    .catch(() => res.status(400).send({ message: 'You did not enter a valid URL' }));
+    .catch((err) => {
+      if (err.message === 'Error') {
+        res.status(404).send({ message: 'Requested resource not found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Valid data not provided' });
+      } else {
+        res.status(500).send({ message: 'Error' });
+      }
+    });
 };
 
 module.exports.patchUserProfile = (req, res) => {
@@ -26,9 +42,17 @@ module.exports.patchUserProfile = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }).orFail()
+    }).orFail(new Error('Error'))
       .then((user) => res.send({ data: user }))
-      .catch(() => res.status(400).send({ message: 'Data validation failed or another error occured.' }));
+      .catch((err) => {
+        if (err.message === 'Error') {
+          res.status(404).send({ message: 'Requested resource not found' });
+        } else if (err.name === 'CastError') {
+          res.status(400).send({ message: 'Valid data not provided' });
+        } else {
+          res.status(500).send({ message: 'Error' });
+        }
+      });
   }
 };
 
@@ -39,8 +63,16 @@ module.exports.patchUserAvatar = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }).orFail()
+    }).orFail(new Error('Error'))
       .then((user) => res.send({ data: user }))
-      .catch(() => res.status(400).send({ message: 'Data validation failed or another error occured.' }));
+      .catch((err) => {
+        if (err.message === 'Error') {
+          res.status(404).send({ message: 'Requested resource not found' });
+        } else if (err.name === 'CastError') {
+          res.status(400).send({ message: 'Valid data not provided' });
+        } else {
+          res.status(500).send({ message: 'Error' });
+        }
+      });
   }
 };
