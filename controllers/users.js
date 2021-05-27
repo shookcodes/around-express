@@ -22,16 +22,10 @@ module.exports.getUser = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar }).orFail(new Error('Error'))
+  User.create({ name, about, avatar })
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      if (err.message === 'Error') {
-        res.status(404).send({ message: 'Requested resource not found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Valid data not provided' });
-      } else {
-        res.status(500).send({ message: 'Error' });
-      }
+    .catch(() => {
+      res.status(404).send({ message: 'Invalid request' });
     });
 };
 
@@ -42,16 +36,10 @@ module.exports.patchUserProfile = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }).orFail(new Error('Error'))
+    })
       .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.message === 'Error') {
-          res.status(404).send({ message: 'Requested resource not found' });
-        } else if (err.name === 'CastError') {
-          res.status(400).send({ message: 'Valid data not provided' });
-        } else {
-          res.status(500).send({ message: 'Error' });
-        }
+      .catch(() => {
+        res.status(404).send({ message: 'Requested resource not found' });
       });
   }
 };
@@ -63,16 +51,10 @@ module.exports.patchUserAvatar = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    }).orFail(new Error('Error'))
+    })
       .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.message === 'Error') {
-          res.status(404).send({ message: 'Requested resource not found' });
-        } else if (err.name === 'CastError') {
-          res.status(400).send({ message: 'Valid data not provided' });
-        } else {
-          res.status(500).send({ message: 'Error' });
-        }
+      .catch(() => {
+        res.status(404).send({ message: 'Requested resource not found' });
       });
   }
 };

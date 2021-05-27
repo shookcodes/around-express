@@ -22,31 +22,19 @@ module.exports.createCard = (req, res) => {
     {
       name, link, owner, createdAt,
     },
-  ).orFail(new Error('Error'))
+  )
     .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.message === 'Error') {
-        res.status(404).send({ message: 'Requested resource not found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Valid data not provided' });
-      } else {
-        res.status(500).send({ message: 'Error' });
-      }
+    .catch(() => {
+      res.status(404).send({ message: 'Valid data not provided' });
     });
 };
 
 module.exports.deleteCard = (req, res) => {
   if (Card.owner === req.params.owner) {
-    Card.findByIdAndRemove(req.params.cardId).orFail(new Error('Error'))
+    Card.findByIdAndRemove(req.params.cardId)
       .then((user) => res.send({ data: user }))
-      .catch((err) => {
-        if (err.message === 'Error') {
-          res.status(404).send({ message: 'Requested resource not found' });
-        } else if (err.name === 'CastError') {
-          res.status(400).send({ message: 'Valid data not provided' });
-        } else {
-          res.status(500).send({ message: 'Error' });
-        }
+      .catch(() => {
+        res.status(404).send({ message: 'Requested resource not found' });
       });
   }
 };
@@ -56,16 +44,10 @@ module.exports.likeCard = (req, res) => {
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
-  ).orFail(new Error('Error'))
+  )
     .then((like) => res.send({ data: like }))
-    .catch((err) => {
-      if (err.message === 'Error') {
-        res.status(404).send({ message: 'Requested resource not found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Valid data not provided' });
-      } else {
-        res.status(500).send({ message: 'Error' });
-      }
+    .catch(() => {
+      res.status(404).send({ message: 'Requested resource not found' });
     });
 };
 
@@ -74,15 +56,9 @@ module.exports.dislikeCard = (req, res) => {
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
-  ).orFail(new Error('Error'))
+  )
     .then((like) => res.send({ data: like }))
-    .catch((err) => {
-      if (err.message === 'Error') {
-        res.status(404).send({ message: 'Requested resource not found' });
-      } else if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Valid data not provided' });
-      } else {
-        res.status(500).send({ message: 'Error' });
-      }
+    .catch(() => {
+      res.status(404).send({ message: 'Requested resource not found' });
     });
 };
