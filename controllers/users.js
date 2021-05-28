@@ -7,10 +7,10 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUser = (req, res) => {
-  User.find({}).orFail(new Error('User not found'))
+  User.findById(req.params.id).orFail(new Error('Not found'))
     .then((user) => res.send({ data: user }))
     .catch((err) => {
-      if (err.message === 'User not Found') {
+      if (err.message === 'Not Found') {
         res.status(404).send({ message: 'Requested resource not found' });
       } else if (err.name === 'CastError') {
         res.status(400).send({ message: 'Valid data not provided' });
@@ -36,10 +36,16 @@ module.exports.patchUserProfile = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    })
+    }).orFail(new Error('Not found'))
       .then((user) => res.send({ data: user }))
-      .catch(() => {
-        res.status(404).send({ message: 'Requested resource not found' });
+      .catch((err) => {
+        if (err.message === 'Not Found') {
+          res.status(404).send({ message: 'Requested resource not found' });
+        } else if (err.name === 'CastError') {
+          res.status(400).send({ message: 'Valid data not provided' });
+        } else {
+          res.status(500).send({ message: 'Error' });
+        }
       });
   }
 };
@@ -51,10 +57,16 @@ module.exports.patchUserAvatar = (req, res) => {
       new: true,
       runValidators: true,
       upsert: false,
-    })
+    }).orFail(new Error('Not Found'))
       .then((user) => res.send({ data: user }))
-      .catch(() => {
-        res.status(404).send({ message: 'Requested resource not found' });
+      .catch((err) => {
+        if (err.message === 'Not Found') {
+          res.status(404).send({ message: 'Requested resource not found' });
+        } else if (err.name === 'CastError') {
+          res.status(400).send({ message: 'Valid data not provided' });
+        } else {
+          res.status(500).send({ message: 'Error' });
+        }
       });
   }
 };

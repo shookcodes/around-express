@@ -31,10 +31,16 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   if (Card.owner === req.params.owner) {
-    Card.findByIdAndRemove(req.params.cardId)
+    Card.findByIdAndRemove(req.params.cardId).orFail(new Error('Not Found'))
       .then((user) => res.send({ data: user }))
-      .catch(() => {
-        res.status(404).send({ message: 'Requested resource not found' });
+      .catch((err) => {
+        if (err.message === 'Not Found') {
+          res.status(404).send({ message: 'Requested resource not found' });
+        } else if (err.name === 'CastError') {
+          res.status(400).send({ message: 'Valid data not provided' });
+        } else {
+          res.status(500).send({ message: 'Error' });
+        }
       });
   }
 };
@@ -44,10 +50,16 @@ module.exports.likeCard = (req, res) => {
     req.params.cardId,
     { $addToSet: { likes: req.user._id } },
     { new: true },
-  )
+  ).orFail(new Error('Not found'))
     .then((like) => res.send({ data: like }))
-    .catch(() => {
-      res.status(404).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      if (err.message === 'Not Found') {
+        res.status(404).send({ message: 'Requested resource not found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Valid data not provided' });
+      } else {
+        res.status(500).send({ message: 'Error' });
+      }
     });
 };
 
@@ -56,9 +68,15 @@ module.exports.dislikeCard = (req, res) => {
     req.params.cardId,
     { $pull: { likes: req.user._id } },
     { new: true },
-  )
+  ).orFail(new Error('Not found'))
     .then((like) => res.send({ data: like }))
-    .catch(() => {
-      res.status(404).send({ message: 'Requested resource not found' });
+    .catch((err) => {
+      if (err.message === 'Not Found') {
+        res.status(404).send({ message: 'Requested resource not found' });
+      } else if (err.name === 'CastError') {
+        res.status(400).send({ message: 'Valid data not provided' });
+      } else {
+        res.status(500).send({ message: 'Error' });
+      }
     });
 };
